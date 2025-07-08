@@ -1,0 +1,124 @@
+/* Nền gradient nhẹ nhàng */
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #74ebd5, #acb6e5);
+    color: #202020;
+}
+
+/* Tiêu đề nổi bật */
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    color: #1b1b1b;
+    margin-bottom: 30px;
+}
+
+/* Các nhãn và biểu mẫu */
+form {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="time"],
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+/* Nút bấm */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Danh sách bị chặn */
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+li {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 8px 12px;
+    margin: 5px 0;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Đoạn hiển thị đồng hồ */
+#countdown {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #e53935;
+}
+
+/* Thông báo thành công */
+p[style*="color:green"] {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.container {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+/* Cột trái và phải chiếm mỗi bên 45% màn hình */
+.left-panel, .right-panel {
+    flex: 1 1 45%;
+    min-width: 280px;
+}
+
+/* Tùy chỉnh đồng hồ */
+.right-panel {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#countdown {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: red;
+    margin-top: 10px;
+}
+
+.message {
+    margin: 10px auto;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #d32f2f; /* đỏ nếu cảnh báo */
+}
+

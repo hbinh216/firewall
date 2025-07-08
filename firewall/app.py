@@ -36,6 +36,17 @@ def is_blocked(url):
         if site in url:
             return True
     return False
+import re
+
+def is_valid_url(site):
+    # Kiểm tra domain hoặc URL có dạng hợp lệ
+    pattern = re.compile(
+        r'^(https?:\/\/)?'            # http:// hoặc https:// (không bắt buộc)
+        r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}'  # domain dạng abc.com hoặc www.abc.vn
+        r'(\/.*)?$'                   # phần path (nếu có)
+    )
+    return pattern.match(site) is not None
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -53,11 +64,14 @@ def index():
 
         elif action == 'add_site':
             site = request.form['site_to_add'].strip()
-            if site and site not in blocked_sites:
+            if not is_valid_url(site):
+                message = f'⚠️ Địa chỉ "{site}" không hợp lệ. Vui lòng nhập đúng định dạng (ví dụ: facebook.com hoặc https://abc.xyz).'
+            elif site in blocked_sites:
+                message = f'⚠️ Địa chỉ "{site}" đã có trong danh sách chặn.'
+            else:
                 blocked_sites.append(site)
                 save_blocked_sites(blocked_sites)
                 message = f'➕ Đã thêm "{site}" vào danh sách chặn.'
-
         elif action == 'delete_site':
             site = request.form['site_to_delete'].strip()
             if site in blocked_sites:

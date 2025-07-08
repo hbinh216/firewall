@@ -1,29 +1,42 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Tường lửa học tập</title>
 </head>
 <body>
     <h1>📚 Tường lửa học tập</h1>
 
-    <!-- Thiết lập giờ học -->
-    <form method="POST" action="/">
-        <label>Giờ bắt đầu:</label>
-        <input type="time" name="start_time" value="{{ study_time.start }}" required><br><br>
+    {% if message %}
+    <p class="message">{{ message }}</p>
+    {% endif %}
 
-        <label>Giờ kết thúc:</label>
-        <input type="time" name="end_time" value="{{ study_time.end }}" required><br><br>
+    <div class="container">
+        <!-- CỘT BÊN TRÁI: FORM THIẾT LẬP -->
+        <div class="left-panel">
+            <form method="POST" action="/">
+                <label>Giờ bắt đầu:</label>
+                <input type="time" name="start_time" value="{{ study_time.start }}" required><br><br>
 
-        <button type="submit" name="action" value="set_time">Lưu giờ học</button>
-    </form>
+                <label>Giờ kết thúc:</label>
+                <input type="time" name="end_time" value="{{ study_time.end }}" required><br><br>
 
+                <button type="submit" name="action" value="set_time">Lưu giờ học</button>
+            </form>
+        </div>
+
+        <!-- CỘT BÊN PHẢI: ĐỒNG HỒ -->
+        <div class="right-panel">
+            <h3>⏳ Thời gian học còn lại:</h3>
+            <p id="countdown">Đang tải...</p>
+        </div>
+    </div>
     <hr>
 
     <!-- Thêm website vào danh sách -->
     <form method="POST" action="/">
         <label>Thêm website bị chặn:</label>
-        <input type="text" name="site_to_add" placeholder="facebook.com" required>
+        <input type="text" name="site_to_add" placeholder="website.com" required>
         <button type="submit" name="action" value="add_site">Thêm</button>
     </form>
 
@@ -43,13 +56,7 @@
         </ul>
     {% endif %}
 
-    <p style="color:green;">{{ message }}</p>
-    <hr>
-    <h3>⏳ Thời gian học còn lại:</h3>
-    <p id="countdown">Đang tải...</p>
-
     <script>
-    // Lấy giờ học từ Flask (định dạng: "HH:MM")
     const startTimeStr = "{{ study_time.start or '' }}";
     const endTimeStr = "{{ study_time.end or '' }}";
 
@@ -64,7 +71,6 @@
         const startTime = new Date(now);
         startTime.setHours(startHour, startMinute, 0, 0);
 
-        // Nếu qua nửa đêm
         if (endTime <= startTime) {
             if (now < startTime) {
                 startTime.setDate(startTime.getDate() - 1);
@@ -95,6 +101,5 @@
         document.getElementById("countdown").innerText = "Chưa thiết lập thời gian học.";
     }
     </script>
-
 </body>
 </html>
