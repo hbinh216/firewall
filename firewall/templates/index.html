@@ -1,0 +1,100 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tường lửa học tập</title>
+</head>
+<body>
+    <h1>📚 Tường lửa học tập</h1>
+
+    <!-- Thiết lập giờ học -->
+    <form method="POST" action="/">
+        <label>Giờ bắt đầu:</label>
+        <input type="time" name="start_time" value="{{ study_time.start }}" required><br><br>
+
+        <label>Giờ kết thúc:</label>
+        <input type="time" name="end_time" value="{{ study_time.end }}" required><br><br>
+
+        <button type="submit" name="action" value="set_time">Lưu giờ học</button>
+    </form>
+
+    <hr>
+
+    <!-- Thêm website vào danh sách -->
+    <form method="POST" action="/">
+        <label>Thêm website bị chặn:</label>
+        <input type="text" name="site_to_add" placeholder="facebook.com" required>
+        <button type="submit" name="action" value="add_site">Thêm</button>
+    </form>
+
+    <!-- Hiển thị danh sách đang bị chặn -->
+    {% if blocked_sites %}
+        <h3>📋 Danh sách website bị chặn:</h3>
+        <ul>
+        {% for site in blocked_sites %}
+            <li>
+                {{ site }}
+                <form method="POST" action="/" style="display:inline;">
+                    <input type="hidden" name="site_to_delete" value="{{ site }}">
+                    <button type="submit" name="action" value="delete_site">Xóa</button>
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    <p style="color:green;">{{ message }}</p>
+    <hr>
+    <h3>⏳ Thời gian học còn lại:</h3>
+    <p id="countdown">Đang tải...</p>
+
+    <script>
+    // Lấy giờ học từ Flask (định dạng: "HH:MM")
+    const startTimeStr = "{{ study_time.start or '' }}";
+    const endTimeStr = "{{ study_time.end or '' }}";
+
+    if (startTimeStr && endTimeStr) {
+        const now = new Date();
+        const [endHour, endMinute] = endTimeStr.split(":").map(Number);
+        const [startHour, startMinute] = startTimeStr.split(":").map(Number);
+
+        const endTime = new Date(now);
+        endTime.setHours(endHour, endMinute, 0, 0);
+
+        const startTime = new Date(now);
+        startTime.setHours(startHour, startMinute, 0, 0);
+
+        // Nếu qua nửa đêm
+        if (endTime <= startTime) {
+            if (now < startTime) {
+                startTime.setDate(startTime.getDate() - 1);
+            } else {
+                endTime.setDate(endTime.getDate() + 1);
+            }
+        }
+
+        function updateCountdown() {
+            const current = new Date();
+            if (current < startTime) {
+                document.getElementById("countdown").innerText = "Chưa đến giờ học.";
+            } else if (current >= startTime && current <= endTime) {
+                const diff = endTime - current;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById("countdown").innerText =
+                    `${hours} giờ ${minutes} phút ${seconds} giây`;
+            } else {
+                document.getElementById("countdown").innerText = "Đã hết giờ học.";
+            }
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    } else {
+        document.getElementById("countdown").innerText = "Chưa thiết lập thời gian học.";
+    }
+    </script>
+
+</body>
+</html>
