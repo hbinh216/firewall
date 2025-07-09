@@ -10,6 +10,23 @@ app = Flask(__name__)
 BLOCKLIST_FILE = 'blocklist.txt'
 study_time = {"start": None, "end": None}
 
+def is_site_exists(site):
+    # Đảm bảo có http hoặc https
+    if not site.startswith('http'):
+        url = 'http://' + site
+    else:
+        url = site
+    try:
+        # Sử dụng HEAD cho nhanh, thử GET nếu HEAD bị chặn
+        response = requests.head(url, timeout=3, allow_redirects=True)
+        if response.status_code < 400:
+            return True
+        # Một số web không cho HEAD, thử GET
+        response = requests.get(url, timeout=3, allow_redirects=True)
+        return response.status_code < 400
+    except requests.RequestException:
+        return False
+
 
 def is_within_time_range(start, end, now):
     if start < end:
@@ -68,10 +85,13 @@ def index():
                 message = f'⚠️ Địa chỉ "{site}" không hợp lệ. Vui lòng nhập đúng định dạng (ví dụ: facebook.com hoặc https://abc.xyz).'
             elif site in blocked_sites:
                 message = f'⚠️ Địa chỉ "{site}" đã có trong danh sách chặn.'
+            elif not is_site_exists(site):
+                message = f'⚠️ Website "{site}" không tồn tại. Vui lòng kiểm tra lại tên miền!'
             else:
                 blocked_sites.append(site)
                 save_blocked_sites(blocked_sites)
                 message = f'➕ Đã thêm "{site}" vào danh sách chặn.'
+
         elif action == 'delete_site':
             site = request.form['site_to_delete'].strip()
             if site in blocked_sites:
@@ -103,14 +123,22 @@ def proxy():
     if not target_url:
         return "⚠️ Thiếu URL (?url=http...)", 400
 
+    # Chỉ chặn nếu trong giờ học
     if is_blocked(target_url):
-        return render_template("blocked.html", blocked_url=target_url)
+        if study_time['start'] and study_time['end']:
+            now = datetime.datetime.now().time()
+            start = datetime.datetime.strptime(study_time['start'], "%H:%M").time()
+            end = datetime.datetime.strptime(study_time['end'], "%H:%M").time()
+            if is_within_time_range(start, end, now):
+                return render_template("blocked.html", blocked_url=target_url)
+    # Nếu ngoài giờ học, vẫn truy cập bình thường
 
     try:
         r = requests.get(target_url)
         return Response(r.content, content_type=r.headers.get('Content-Type', 'text/html'))
     except Exception as e:
         return f"Lỗi khi truy cập trang: {e}", 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
