@@ -2,25 +2,37 @@
 <html>
 <head>
     <title>Truy cập bị chặn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+        h1 {
+            font-size: 36px;
+            color: red;
+        }
+        p {
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+        .gif-container {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .gif-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>🚫 Truy cập bị chặn</h1>
     <p>Website "{{ blocked_url }}" bị giới hạn trong thời gian học tập.</p>
 
-    <!-- GIF Tenor -->
-    <div style="max-width: 300px; margin: 20px auto;">
-        <div class="tenor-gif-embed"
-         data-postid="22140910"
-         data-share-method="host"
-         data-aspect-ratio="1"
-         data-width="100%">
-        <a href="https://tenor.com/view/put-your-phone-done-bustle-leave-you-phone-listen-to-me-rickey-thompson-gif-22140910">
-            Put Your Phone Done Bustle Sticker
-        </a>
-        from <a href="https://tenor.com/search/put+your+phone+done-stickers">Put Your Phone Done Stickers</a>
-        </div>
+    <div class="gif-container">
+        <img src="https://media.tenor.com/00juQ4xAvCAAAAAi/kwinklink-emogi1-suspicious.gif" alt="Blocked GIF">
     </div>
-
-    <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
 </body>
 </html>
